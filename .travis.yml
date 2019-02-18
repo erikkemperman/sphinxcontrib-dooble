@@ -1,0 +1,13 @@
+language: python
+python:
+- 3.6
+install: pip install -U tox-travis
+script: tox
+deploy:
+  provider: pypi
+  distributions: sdist
+  user: mainro
+  password:
+    secure: fZvC5F4isF4f5x290bnL8c6fEp0B5af52ym7PSoo5Cpb8XO6IvIwG9UM824r36ABzY3YStWVAT4VLjgNaYutMKi99ljKJk32/I2LttvYOH3RGb5d4dXs7FSWyQg8cl/d0OxAKZjfDc2hTFX8Y2CGTvFV/8MmmccSfFucBKUQBngXhYw7iqjLSH7vroN/h7NqNH8wQ/R69iRBbuggPeegM4JMcp7RbkVfNmgCF1lCajms2ot/PFOOeAOVKguFGXH0KpwM3yD9WuJgMBQb9lhWYWRogrhQ2zijMOJah9KsyN34Jfvruz2gvIcbeHju0n232xQ6z440moSyOY8Tp6WQNc5Oy921BZ+JNKGT7Ez78M8FachPck6Dg/KQGxIQhDpASaYpSqGyPY4w3ynO0j3zbfbu17YpTGY3p+j7udd5metlXhMY0ZhPrqW2Kv8V3vhO851NdofdPiTEAuTtR+Ce7xUAmy0vdB3hl4JMGSj80bVUKgqNX4812H0v8XzNau72C7LUQNPii2ajDHTpt4OAk+Vtml5P62k4wra/fq1noRlMyd7sZkTUtW/mtu3395Bpdivl7NzxWkqBVHthaUlCxeLSSjm3Sfh5syMW/UNjOfDJGs6IaDadmMwIRJwWfbEwwFDImah6efIw7Pfofydi2XpwoMu3zVwbg2L2osC5uYQ=
+  on:
+    tags: true
