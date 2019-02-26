@@ -2,8 +2,8 @@
 sphinxcontrib-dooble
 ====================
 
-.. image:: https://travis-ci.org/mainro/sphinxcontrib-dooble.svg?branch=master
-    :target: https://travis-ci.org/mainro/sphinxcontrib-dooble
+.. image:: https://travis-ci.org/MainRo/sphinxcontrib-dooble.svg?branch=master
+    :target: https://travis-ci.org/MainRo/sphinxcontrib-dooble
 
 A sphinx extension for dooble.
 
