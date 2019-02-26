@@ -2,6 +2,9 @@
 sphinxcontrib-dooble
 ====================
 
+.. image:: https://img.shields.io/pypi/v/sphinxcontrib-dooble.svg
+        :target: https://pypi.python.org/pypi/sphinxcontrib-dooble
+
 .. image:: https://travis-ci.org/MainRo/sphinxcontrib-dooble.svg?branch=master
     :target: https://travis-ci.org/MainRo/sphinxcontrib-dooble
 
