@@ -5,15 +5,35 @@ sphinxcontrib-dooble
 .. image:: https://travis-ci.org/mainro/sphinxcontrib-dooble.svg?branch=master
     :target: https://travis-ci.org/mainro/sphinxcontrib-dooble
 
-A sphinx extension for dooble
+A sphinx extension for dooble.
 
-Overview
---------
+Installation
+------------
 
-Add a longer description here.
+.. code:: console
 
-Links
------
+    pip install dooble
 
-- Source: https://github.com/mainro/sphinxcontrib-dooble
-- Bugs: https://github.com/mainro/sphinxcontrib-dooble/issues
+Usage
+------
+
+In your sphinx project configuration, add dooble to the extensions:
+
+.. code:: python
+
+    extensions = [
+        'sphinxcontrib_dooble',
+    ]
+
+Then marble diagrams can be added with the new *marble* directive:
+
+.. code::
+
+    .. marble::
+        :alt: map
+
+        ---1---2---3---4--->
+        [   map(i: i*2)    ]
+        ---2---4---6---8--->
+
+
