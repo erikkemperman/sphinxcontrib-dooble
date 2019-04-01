@@ -17,7 +17,7 @@ def get_option(options, key, default):
     return options[key]
 
 
-class marble(nodes.General, nodes.Element):
+class Marble(nodes.General, nodes.Element):
     pass
 
 
@@ -52,8 +52,8 @@ def html_visit_marble(self, node):
     refname, outfname = render_marble(self, node)
     html_block = '<img src="{}" alt="{}"/>\n'.format(
         self.encode(refname),
-        self.encode(node["alt"]),
-        )
+        self.encode(node['alt']),
+    )
 
     self.body.append(self.starttag(node, 'p', CLASS='marble'))
     self.body.append(html_block)
@@ -64,6 +64,18 @@ def html_depart_marble(self, node):
     pass
 
 
+def latex_visit_marble(self, node):
+    refname, outfname = render_marble(self, node)
+    latex_block = '\\includegraphics{{{}}}\n'.format(
+        self.encode(refname)
+    )
+    self.body.append(latex_block)
+
+
+def latex_depart_marble(self, node):
+    pass
+
+
 class MarbleDirective(Directive):
     print('marble directive')
     has_content = True
@@ -71,25 +83,26 @@ class MarbleDirective(Directive):
     optional_arguments = 1
     final_argument_whitespace = True
     option_spec = {
-        "alt": directives.unchanged,
+        'alt': directives.unchanged,
     }
 
     def run(self):
-        alt = get_option(self.options, "alt", 'marble diagram')
+        alt = get_option(self.options, 'alt', 'marble diagram')
 
         env = self.state.document.settings.env
         relfn = env.doc2path(env.docname, base=None)
         text = '\n'.join(self.content)
 
-        node = marble(self.block_text, alt=alt)
+        node = Marble(self.block_text, alt=alt)
         node['text'] = text
         node['filename'] = os.path.split(relfn)[1]
         return [node]
 
 
 def setup(app):
-    app.add_node(marble,
+    app.add_node(Marble,
         html=(html_visit_marble, html_depart_marble),
+        latex=(latex_visit_marble, latex_depart_marble)
     )
 
     app.add_directive('marble', MarbleDirective)

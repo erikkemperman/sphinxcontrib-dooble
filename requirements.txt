@@ -1,1 +1,4 @@
+docutils
+dooble
 pbr
+sphinx
