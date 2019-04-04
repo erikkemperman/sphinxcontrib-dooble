@@ -1,5 +1,10 @@
 import os
 import hashlib
+from datetime import datetime
+
+from concurrent.futures import ProcessPoolExecutor, wait
+from time import sleep
+
 from docutils import nodes
 from docutils.parsers.rst import directives
 from docutils.parsers.rst import Directive
@@ -18,7 +23,26 @@ def get_option(options, key, default):
 
 
 class Marble(nodes.General, nodes.Element):
-    pass
+    _pool = ProcessPoolExecutor(max_workers=8)
+    _futures = []
+
+    @staticmethod
+    def render_marble(text, outfname):
+        with open('/home/erik/temp', 'a') as w:
+            w.write('render marble ' + text + '\n')
+            w.flush()
+        idl = Idl()
+        ast = idl.parse(text)
+        marble = create_marble_from_ast(ast)
+        render_to_file(marble, outfname, default_theme)
+
+    @staticmethod
+    def wait_marbles(app, exception):
+        with open('/home/erik/temp', 'a') as w:
+            w.write('waiting marbles %d\n' % len(Marble._futures))
+            w.flush()
+        sleep(30)
+        wait(Marble._futures)
 
 
 def generate_name(self, node):
@@ -34,22 +58,30 @@ def generate_name(self, node):
         return fname, os.path.join(self.builder.outdir, fname)
 
 
-def render_marble(self, node):
+def schedule_marble(self, node):
     refname, outfname = generate_name(self, node)
-    if os.path.exists(outfname):
-        return refname, outfname
+    if not os.path.exists(outfname):
+        with open('/home/erik/temp', 'a') as w:
+            w.write(str(self) + '\n')
+            w.write('go marble %d\n' % len(Marble._futures))
+            w.write('  ' + node['text'] + '\n')
+            w.flush()
+        ensuredir(os.path.dirname(outfname))
+        try:
+            future = Marble._pool.submit(Marble.render_marble, (node['text'], outfname))
+            Marble._futures.append(future)
+        except Exception as e:
+            with open('/home/erik/temp', 'a') as w:
+                w.write(
+                    'eek ' + str(e) + '\n')
+                w.flush()
 
-    ensuredir(os.path.dirname(outfname))
-    idl = Idl()
-    ast = idl.parse(node['text'])
-
-    marble = create_marble_from_ast(ast)
-    render_to_file(marble, outfname, default_theme)
     return refname, outfname
 
 
 def html_visit_marble(self, node):
-    refname, outfname = render_marble(self, node)
+
+    refname, outfname = schedule_marble(self, node)
     html_block = '<img src="{}" alt="{}"/>\n'.format(
         self.encode(refname),
         self.encode(node['alt']),
@@ -65,7 +97,7 @@ def html_depart_marble(self, node):
 
 
 def latex_visit_marble(self, node):
-    refname, outfname = render_marble(self, node)
+    refname, outfname = schedule_marble(self, node)
     latex_block = '\\includegraphics{{{}}}\n'.format(
         self.encode(refname)
     )
@@ -77,7 +109,6 @@ def latex_depart_marble(self, node):
 
 
 class MarbleDirective(Directive):
-    print('marble directive')
     has_content = True
     required_arguments = 0
     optional_arguments = 1
@@ -106,4 +137,5 @@ def setup(app):
     )
 
     app.add_directive('marble', MarbleDirective)
+    app.connect('build-finished', Marble.wait_marbles)
     return {'parallel_read_safe': True}

@@ -8,9 +8,8 @@ from setuptools import setup, find_packages
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
-requirements = [
-    'dooble>=0.3',
-]
+with open('requirements.txt') as requirements_file:
+    requirements = requirements_file.read().splitlines()
 
 setup_requirements = [ ]
 
@@ -26,7 +25,7 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
     ],
-    description="A sphinx extansion for dooble",
+    description="A sphinx extension for dooble",
     install_requires=requirements,
     license="MIT license",
     long_description=readme,
